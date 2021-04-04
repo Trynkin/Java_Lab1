@@ -9,12 +9,10 @@ public class Main {
 
     public static void main(String[] args) {
         Reader reader = null;
-        Writer writer;
         StringBuilder buffer = new StringBuilder(256);
         HashMap<String, Word> map = new HashMap<>();
         Character c;
         String temp;
-        File output = new File("output");
         int word_num = 0;
         try
         {
@@ -36,12 +34,20 @@ public class Main {
             }
             Word[] list = map.values().toArray(new Word[0]);
             Arrays.sort(list);
-            System.out.println(output.createNewFile());
-            writer = new OutputStreamWriter(new FileOutputStream(output));
-            for(int i = 1; i <= list.length; ++i){
-                Word curr = list[list.length-i];
-                writer.write(curr.getWord()+','+curr.getCount()/word_num+',');
+            File fileOutput = new File("output");
+            fileOutput.createNewFile();
+            FileWriter output = new FileWriter(fileOutput);
+            int l = list.length;
+            Double freq;
+            String proc;
+            for(int i = 1; i <= l; ++i){
+                Word curr = list[l-i];
+                freq =  ((double)curr.getCount() / word_num);
+                proc = 100*freq < 1.0 ? "<1" : (freq *= 100).toString() ;
+                freq/=100;
+                output.write(curr.getWord()+','+freq+','+proc+"%\n");
             }
+            output.close();
 
         }
         catch (IOException e)
